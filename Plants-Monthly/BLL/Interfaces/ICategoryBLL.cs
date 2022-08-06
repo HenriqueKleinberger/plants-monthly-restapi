@@ -1,9 +1,11 @@
 
+using Plants_Monthly.DTO;
+
 namespace Plants_Monthly.BLL.Interfaces
 {
-    public interface IPlantBLL
+    public interface ICategoryBLL
     {
-        //public Task<List<PlantDTO>> GetPlantsAsync(String name, int page);
+        public Task<List<CategoryDTO>> GetCategoriesAsync();
 
         //public Task<MovieDetailsResponseDTO> GetMovieDetailsAsync(String imdbId);
     }
