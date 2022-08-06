@@ -11,6 +11,8 @@ namespace Plants_Monthly.Utils
         {
             services.AddScoped<ICategoryBLL, CategoryBLL>();
             services.AddScoped<ICategoryDAL, CategoryDAL>();
+            services.AddScoped<IOrderBLL, OrderBLL>();
+            services.AddScoped<IOrderDAL, OrderDAL>();
         }
     }
 }

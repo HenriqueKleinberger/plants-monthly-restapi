@@ -10,6 +10,7 @@ namespace Plants_Monthly.Model
         public string ImageId { get; set; }
 
         public Category Category { get; set; }
+        public List<Order> Orders { get; set; }
     }
 }
 

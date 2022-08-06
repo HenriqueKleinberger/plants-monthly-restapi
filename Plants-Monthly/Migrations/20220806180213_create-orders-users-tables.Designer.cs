@@ -12,7 +12,7 @@ using Plants_Monthly.Model;
 namespace Plants_Monthly.Migrations
 {
     [DbContext(typeof(FarmsDbContext))]
-    [Migration("20220806122839_create-orders-users-tables")]
+    [Migration("20220806180213_create-orders-users-tables")]
     partial class createordersuserstables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,21 @@ namespace Plants_Monthly.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("OrderPlant", b =>
+                {
+                    b.Property<int>("OrdersId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PlantsId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("OrdersId", "PlantsId");
+
+                    b.HasIndex("PlantsId");
+
+                    b.ToTable("OrderPlant");
+                });
 
             modelBuilder.Entity("Plants_Monthly.Model.Category", b =>
                 {
@@ -40,17 +55,20 @@ namespace Plants_Monthly.Migrations
 
             modelBuilder.Entity("Plants_Monthly.Model.Order", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Category")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -85,8 +103,11 @@ namespace Plants_Monthly.Migrations
 
             modelBuilder.Entity("Plants_Monthly.Model.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -97,11 +118,28 @@ namespace Plants_Monthly.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("OrderPlant", b =>
+                {
+                    b.HasOne("Plants_Monthly.Model.Order", null)
+                        .WithMany()
+                        .HasForeignKey("OrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Plants_Monthly.Model.Plant", null)
+                        .WithMany()
+                        .HasForeignKey("PlantsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Plants_Monthly.Model.Order", b =>
                 {
                     b.HasOne("Plants_Monthly.Model.User", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

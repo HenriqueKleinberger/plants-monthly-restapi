@@ -5,11 +5,11 @@ namespace Plants_Monthly.Model
     public class Order
     {
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
         public DateTime Date { get; set; }
         public User User { get; set; }
-
-        public OrderStatus Category { get; set; }
+        public List<Plant> Plants { get; set; }
+        public OrderStatus Status { get; set; }
     }
 
     public enum OrderStatus
