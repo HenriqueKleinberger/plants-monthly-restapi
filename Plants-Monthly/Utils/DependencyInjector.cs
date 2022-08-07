@@ -13,6 +13,8 @@ namespace Plants_Monthly.Utils
             services.AddScoped<ICategoryDAL, CategoryDAL>();
             services.AddScoped<IOrderBLL, OrderBLL>();
             services.AddScoped<IOrderDAL, OrderDAL>();
+            services.AddScoped<IPlantDAL, PlantDAL>();
+            services.AddScoped<IUserDAL, UserDAL>();
         }
     }
 }

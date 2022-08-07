@@ -19,6 +19,11 @@ namespace Plants_Monthly.BLL
         {
             return await _orderDAL.GetOrderOpenedAsync(userId);
         }
+
+        public async Task<OrderDTO> CreateOrderAsync(int userId, OrderDTO orderDTO)
+        {
+            return await _orderDAL.CreateOrderAsync(userId, orderDTO);
+        }
     }
 
 }

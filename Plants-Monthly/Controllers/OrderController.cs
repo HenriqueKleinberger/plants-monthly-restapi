@@ -31,5 +31,12 @@ namespace Plants_Monthly.Controllers
                 return Ok(null);
             }
         }
+
+        [HttpPost(Name = "Create Order")]
+        public async Task<IActionResult> Post(int userId, [FromBody] OrderDTO orderDTO)
+        {
+            OrderDTO orderDTOCreated = await _orderBLL.CreateOrderAsync(userId, orderDTO);
+            return Created("PostAsync", orderDTOCreated);
+        }
     }
 }

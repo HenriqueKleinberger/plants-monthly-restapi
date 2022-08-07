@@ -11,11 +11,20 @@ namespace Plants_Monthly.DAL
     {
         private readonly ILogger<OrderDAL> _logger;
         private readonly FarmsDbContext _dbContext;
+        private readonly IPlantDAL _plantDAL;
+        private readonly IUserDAL _userDAL;
 
-        public OrderDAL(ILogger<OrderDAL> logger, FarmsDbContext dbContext)
+        public OrderDAL(
+            ILogger<OrderDAL> logger,
+            FarmsDbContext dbContext,
+            IPlantDAL plantDAL,
+            IUserDAL userDAL
+            )
         {
             _logger = logger;
             _dbContext = dbContext;
+            _plantDAL = plantDAL;
+            _userDAL = userDAL;
         }
 
         public async Task<OrderDTO> GetOrderOpenedAsync(int userId)
@@ -33,6 +42,19 @@ namespace Plants_Monthly.DAL
             return order.ToOrderDTO();
         }
 
+        public async Task<OrderDTO> CreateOrderAsync(int userId, OrderDTO orderDTO)
+        {
+            _logger.LogInformation("### CategoryDAL - GetCategoriesAsync started ###");
+
+            List<Plant> plants = await _plantDAL.GetPlantsAsync(orderDTO.PlantsId);
+            User user = await _userDAL.GetUserAsync(userId);
+
+            Order order = (await _dbContext.AddAsync(orderDTO.ToOrder(user, plants))).Entity;
+
+            await _dbContext.SaveChangesAsync();
+
+            return order.ToOrderDTO();
+        }
     }
 
 }

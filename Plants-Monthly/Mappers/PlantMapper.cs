@@ -17,5 +17,17 @@ namespace Plants_Monthly.Mappers
 
             return plantDTO;
         }
+
+        public static Plant ToPlant(this PlantDTO plantDTO)
+        {
+            Plant plant = new Plant()
+            {
+                Id = plantDTO.Id,
+                ImageId = plantDTO.ImageId,
+                Name = plantDTO.Name
+            };
+
+            return plant;
+        }
     }
 }

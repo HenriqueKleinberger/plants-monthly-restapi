@@ -12,10 +12,23 @@ namespace Plants_Monthly.Mappers
             {
                 Id = order.Id,
                 Date = order.Date,
-                Plants = order.Plants.ConvertAll(p => p.ToPlantDTO())
+                PlantsId = order.Plants.ConvertAll(p => p.Id)
             };
 
             return orderDTO;
+        }
+
+        public static Order ToOrder(this OrderDTO orderDTO, User user, List<Plant> plants)
+        {
+            Order order = new Order()
+            {
+                Id = orderDTO.Id,
+                Date = orderDTO.Date,
+                Plants = plants,
+                User = user
+            };
+
+            return order;
         }
     }
 }
