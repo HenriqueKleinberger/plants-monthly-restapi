@@ -14,9 +14,9 @@ namespace Plants_Monthly.Model
 
     public enum OrderStatus
     {
-        Deliveled,
         Opened,
-        WaitingDelivery
+        WaitingDelivery,
+        Deliveled
     }
 }
 

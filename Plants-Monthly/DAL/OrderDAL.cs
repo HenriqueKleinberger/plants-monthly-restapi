@@ -33,7 +33,9 @@ namespace Plants_Monthly.DAL
 
             Order? order = await _dbContext
                 .Orders
-                .Where(o => o.User.Id == userId && o.Status == OrderStatus.Opened).FirstOrDefaultAsync();
+                .Where(o => o.User.Id == userId && o.Status == OrderStatus.Opened)
+                .Include(o => o.Plants)
+                .FirstOrDefaultAsync();
 
             if (order == null) throw new OrderNotFoundException("There is no order opened for this user");
 
@@ -46,7 +48,7 @@ namespace Plants_Monthly.DAL
         {
             _logger.LogInformation("### CategoryDAL - GetCategoriesAsync started ###");
 
-            List<Plant> plants = await _plantDAL.GetPlantsAsync(orderDTO.PlantsId);
+            List<Plant> plants = await _plantDAL.GetPlantsAsync(orderDTO.Plants.ConvertAll(p => p.Id));
             User user = await _userDAL.GetUserAsync(userId);
 
             Order order = (await _dbContext.AddAsync(orderDTO.ToOrder(user, plants))).Entity;

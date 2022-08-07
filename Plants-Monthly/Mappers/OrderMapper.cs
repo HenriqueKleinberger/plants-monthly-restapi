@@ -12,7 +12,7 @@ namespace Plants_Monthly.Mappers
             {
                 Id = order.Id,
                 Date = order.Date,
-                PlantsId = order.Plants.ConvertAll(p => p.Id)
+                Plants = order.Plants.ConvertAll(p => p.ToPlantDTO())
             };
 
             return orderDTO;
@@ -25,7 +25,8 @@ namespace Plants_Monthly.Mappers
                 Id = orderDTO.Id,
                 Date = orderDTO.Date,
                 Plants = plants,
-                User = user
+                User = user,
+                Status = OrderStatus.Opened
             };
 
             return order;

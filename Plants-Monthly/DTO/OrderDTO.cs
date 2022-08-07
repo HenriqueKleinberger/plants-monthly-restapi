@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }
-        public List<String> PlantsId { get; set; }
+        public List<PlantDTO> Plants { get; set; }
     }
 }
 

@@ -19,7 +19,7 @@ namespace Plants_Monthly.Controllers
             _orderBLL = orderBLL;
         }
 
-        [HttpGet(Name = "GetOrders")]
+        [HttpGet("userId/{userId}/opened", Name = "GetOrders")]
         public async Task<IActionResult> Get(int userId)
         {
             try
@@ -32,7 +32,7 @@ namespace Plants_Monthly.Controllers
             }
         }
 
-        [HttpPost(Name = "Create Order")]
+        [HttpPost("userId/{userId}", Name = "Create Order")]
         public async Task<IActionResult> Post(int userId, [FromBody] OrderDTO orderDTO)
         {
             OrderDTO orderDTOCreated = await _orderBLL.CreateOrderAsync(userId, orderDTO);

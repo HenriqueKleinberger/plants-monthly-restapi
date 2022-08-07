@@ -12,7 +12,7 @@ using Plants_Monthly.Model;
 namespace Plants_Monthly.Migrations
 {
     [DbContext(typeof(FarmsDbContext))]
-    [Migration("20220806180213_create-orders-users-tables")]
+    [Migration("20220807111633_create-orders-users-tables")]
     partial class createordersuserstables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
