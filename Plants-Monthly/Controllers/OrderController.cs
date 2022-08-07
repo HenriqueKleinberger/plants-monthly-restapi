@@ -38,5 +38,12 @@ namespace Plants_Monthly.Controllers
             OrderDTO orderDTOCreated = await _orderBLL.CreateOrderAsync(userId, orderDTO);
             return Created("PostAsync", orderDTOCreated);
         }
+
+        [HttpPut("userId/{userId}/order/{orderId}", Name = "Update Order")]
+        public async Task<IActionResult> Put(int userId, int orderId, [FromBody] OrderDTO orderDTO)
+        {
+            OrderDTO orderDTOUpdated = await _orderBLL.UpdateOrderAsync(userId, orderId, orderDTO);
+            return Ok(orderDTOUpdated);
+        }
     }
 }

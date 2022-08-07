@@ -26,6 +26,23 @@ namespace Plants_Monthly.DAL
             _plantDAL = plantDAL;
             _userDAL = userDAL;
         }
+        public async Task<Order> GetOrderAsync(int userId, int orderId)
+        {
+            _logger.LogInformation("### OrderDAL - GetOrderOpenedAsync started ###");
+
+            Order? order = await _dbContext
+                .Orders
+                .Where(o => o.Id == orderId && o.User.Id == userId)
+                .Include(o => o.Plants)
+                .FirstOrDefaultAsync();
+
+            if (order == null) throw new OrderNotFoundException($"There is no order with id {orderId} for the user {userId}");
+
+            _logger.LogInformation("### OrderDAL - GetOrderOpenedAsync ended ###");
+
+            return order;
+        }
+
 
         public async Task<OrderDTO> GetOrderOpenedAsync(int userId)
         {
@@ -37,7 +54,7 @@ namespace Plants_Monthly.DAL
                 .Include(o => o.Plants)
                 .FirstOrDefaultAsync();
 
-            if (order == null) throw new OrderNotFoundException("There is no order opened for this user");
+            if (order == null) throw new OrderNotFoundException($"There is no order opened for the user {userId}");
 
             _logger.LogInformation("### OrderDAL - GetOrderOpenedAsync ended ###");
 
@@ -46,7 +63,7 @@ namespace Plants_Monthly.DAL
 
         public async Task<OrderDTO> CreateOrderAsync(int userId, OrderDTO orderDTO)
         {
-            _logger.LogInformation("### CategoryDAL - GetCategoriesAsync started ###");
+            _logger.LogInformation("### OrderDAL - CreateOrderAsync started ###");
 
             List<Plant> plants = await _plantDAL.GetPlantsAsync(orderDTO.Plants.ConvertAll(p => p.Id));
             User user = await _userDAL.GetUserAsync(userId);
@@ -54,6 +71,23 @@ namespace Plants_Monthly.DAL
             Order order = (await _dbContext.AddAsync(orderDTO.ToOrder(user, plants))).Entity;
 
             await _dbContext.SaveChangesAsync();
+
+            _logger.LogInformation("### OrderDAL - CreateOrderAsync ended ###");
+
+            return order.ToOrderDTO();
+        }
+
+        public async Task<OrderDTO> UpdateOrderAsync(Order order, OrderDTO orderDTO)
+        {
+            _logger.LogInformation("### OrderDAL - UpdateOrderAsync started ###");
+
+            List<Plant> plants = await _plantDAL.GetPlantsAsync(orderDTO.Plants.ConvertAll(p => p.Id));
+
+            order.Plants = plants;
+
+            await _dbContext.SaveChangesAsync();
+
+            _logger.LogInformation("### OrderDAL - UpdateOrderAsync ended ###");
 
             return order.ToOrderDTO();
         }
