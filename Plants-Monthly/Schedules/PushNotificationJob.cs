@@ -17,7 +17,24 @@ namespace Plants_Monthly.Schedules
 
         public async Task Execute(IJobExecutionContext context)
 		{
-            Console.WriteLine("metodo");
+            List<PushTokenDTO> tokens = await _pushTokenDAL.GetPushTokensAsync();
+            var expoSDKClient = new PushApiClient();
+            var pushTicketReq = new PushTicketRequest()
+            {
+                PushTo = tokens.ConvertAll(t => t.Token),
+                PushBadgeCount = 7,
+                PushTitle= "Your monthly order",
+                PushBody = "Please select the plants for your next shipment"
+            };
+            var result = await expoSDKClient.PushSendAsync(pushTicketReq);
+
+            if (result?.PushTicketErrors?.Count() > 0)
+            {
+                foreach (var error in result.PushTicketErrors)
+                {
+                    Console.WriteLine($"Error: {error.ErrorCode} - {error.ErrorMessage}");
+                }
+            }
         }
 	}
 }

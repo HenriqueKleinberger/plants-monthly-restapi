@@ -7,24 +7,23 @@ namespace Plants_Monthly.Utils
     {
         public async static void CreateSchedule(IServiceCollection services)
         {
+            string notificationJob = "push notification job";
             services.AddQuartz(q => {
                 q.UseMicrosoftDependencyInjectionJobFactory();
-                var jobKey = new JobKey("awesome job", "awesome group");
+                var jobKey = new JobKey(notificationJob, "push notification group");
                 q.AddJob<PushNotificationJob>(jobKey, j => j
-                    .WithDescription("my awesome job")
+                    .WithDescription(notificationJob)
                 );
 
                 // Trigger the job on the 25th of each month at 7PM
                 q.AddTrigger(t => t
-                 .WithIdentity("Simple Trigger")
-                 .ForJob(jobKey)
-                 .StartNow()
-                 .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromSeconds(10)).RepeatForever())
-                 //.WithCronSchedule("30 9 12 8 * ?")
-                 .WithDescription("my awesome simple trigger")
-
-
-            );
+                    .WithIdentity("Push Notification Trigger")
+                    .ForJob(jobKey)
+                    .StartNow()
+                    .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromMinutes(20)).RepeatForever())
+                    //.WithCronSchedule("0 0 19 25 * ?")
+                    .WithDescription("Push Notification Trigger")
+                );
             });
             services.AddQuartzServer(opts => opts.WaitForJobsToComplete = true);
         }
