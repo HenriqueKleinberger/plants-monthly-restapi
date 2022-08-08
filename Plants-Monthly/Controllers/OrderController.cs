@@ -1,3 +1,5 @@
+using Expo.Server.Client;
+using Expo.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Plants_Monthly.BLL.Interfaces;
 using Plants_Monthly.DTO;
@@ -19,7 +21,7 @@ namespace Plants_Monthly.Controllers
             _orderBLL = orderBLL;
         }
 
-        [HttpGet("userId/{userId}/opened", Name = "GetOrders")]
+        [HttpGet("user/{userId}/opened", Name = "GetOrders")]
         public async Task<IActionResult> Get(int userId)
         {
             try
@@ -32,18 +34,18 @@ namespace Plants_Monthly.Controllers
             }
         }
 
-        [HttpPost("userId/{userId}", Name = "Create Order")]
+        [HttpPost("user/{userId}", Name = "Create Order")]
         public async Task<IActionResult> Post(int userId, [FromBody] OrderDTO orderDTO)
         {
             OrderDTO orderDTOCreated = await _orderBLL.CreateOrderAsync(userId, orderDTO);
             return Created("PostAsync", orderDTOCreated);
         }
 
-        [HttpPut("userId/{userId}/order/{orderId}", Name = "Update Order")]
+        [HttpPut("user/{userId}/order/{orderId}", Name = "Update Order")]
         public async Task<IActionResult> Put(int userId, int orderId, [FromBody] OrderDTO orderDTO)
         {
             OrderDTO orderDTOUpdated = await _orderBLL.UpdateOrderAsync(userId, orderId, orderDTO);
             return Ok(orderDTOUpdated);
-        }
+        } 
     }
 }
