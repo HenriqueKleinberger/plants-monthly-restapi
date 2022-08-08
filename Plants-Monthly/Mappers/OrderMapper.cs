@@ -11,7 +11,8 @@ namespace Plants_Monthly.Mappers
             OrderDTO orderDTO = new OrderDTO()
             {
                 Id = order.Id,
-                Date = order.Date,
+                Month = order.Date.Month,
+                Year = order.Date.Year,
                 Plants = order.Plants.ConvertAll(p => p.ToPlantDTO())
             };
 
@@ -23,7 +24,7 @@ namespace Plants_Monthly.Mappers
             Order order = new Order()
             {
                 Id = orderDTO.Id,
-                Date = orderDTO.Date,
+                //Date = orderDTO.Date,
                 Plants = plants,
                 User = user,
                 Status = OrderStatus.Opened

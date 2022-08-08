@@ -10,12 +10,18 @@ namespace Plants_Monthly.DAL
     public class PushTokenDAL : IPushTokenDAL
     {
         private readonly ILogger<PushTokenDAL> _logger;
+        private readonly IOrderDAL _orderDAL;
         private readonly FarmsDbContext _dbContext;
 
-        public PushTokenDAL(ILogger<PushTokenDAL> logger, FarmsDbContext dbContext)
+        public PushTokenDAL(
+            ILogger<PushTokenDAL> logger,
+            FarmsDbContext dbContext,
+            IOrderDAL orderDAL
+        )
         {
             _logger = logger;
             _dbContext = dbContext;
+            _orderDAL = orderDAL;
         }
 
         public async Task<List<PushTokenDTO>> GetPushTokensAsync()
@@ -24,6 +30,9 @@ namespace Plants_Monthly.DAL
 
             List<PushToken> pushTokens = await _dbContext
                 .PushTokens
+                .Include(pt => pt.User)
+                .ThenInclude(u => u.Orders)
+                .Where(pt => pt.User.Orders.Any(o => o.Date.Month == DateTime.Now.Month && o.Status == OrderStatus.Opened))
                 .ToListAsync();
 
             _logger.LogInformation("### PushTokenDAL - GetPushTokensAsync ended ###");

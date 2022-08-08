@@ -12,7 +12,7 @@ using Plants_Monthly.Model;
 namespace Plants_Monthly.Migrations
 {
     [DbContext(typeof(FarmsDbContext))]
-    [Migration("20220808093139_create-push-token-table")]
+    [Migration("20220808113349_create-push-token-table")]
     partial class createpushtokentable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -113,7 +113,12 @@ namespace Plants_Monthly.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("PushTokens");
                 });
@@ -172,6 +177,17 @@ namespace Plants_Monthly.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("Plants_Monthly.Model.PushToken", b =>
+                {
+                    b.HasOne("Plants_Monthly.Model.User", "User")
+                        .WithMany("PushTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Plants_Monthly.Model.Category", b =>
                 {
                     b.Navigation("Plants");
@@ -180,6 +196,8 @@ namespace Plants_Monthly.Migrations
             modelBuilder.Entity("Plants_Monthly.Model.User", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("PushTokens");
                 });
 #pragma warning restore 612, 618
         }

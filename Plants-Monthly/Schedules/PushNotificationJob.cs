@@ -9,6 +9,7 @@ namespace Plants_Monthly.Schedules
 	public class PushNotificationJob : IJob
 	{
         private readonly IPushTokenDAL _pushTokenDAL;
+        private readonly IOrderDAL _orderDAL;
 
         public PushNotificationJob(IPushTokenDAL pushTokenDAL)
         {

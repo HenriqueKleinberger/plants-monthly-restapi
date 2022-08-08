@@ -16,7 +16,8 @@ namespace Plants_Monthly.Model
     {
         Opened,
         WaitingDelivery,
-        Deliveled
+        Deliveled,
+        Canceled
     }
 }
 
