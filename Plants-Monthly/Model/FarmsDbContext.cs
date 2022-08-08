@@ -8,8 +8,8 @@ namespace Plants_Monthly.Model
         public DbSet<Plant> Plants { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Order> Orders { get; set; }
-
         public DbSet<User> Users { get; set; }
+        public DbSet<PushToken> PushTokens { get; set; }
 
         protected readonly IConfiguration Configuration;
 
