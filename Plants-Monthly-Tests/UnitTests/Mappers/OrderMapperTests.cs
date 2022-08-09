@@ -5,6 +5,7 @@ using Plants_Monthly.Mappers;
 using Plants_Monthly.Model;
 using Plants_Monthly.Utils;
 using Plants_Monthly_Tests.Builders.DTO;
+using Plants_Monthly_Tests.Builders.Model;
 using System;
 using System.Collections.Generic;
 
@@ -20,8 +21,9 @@ namespace Plants_Monthly_Tests.UnitTests.Mappers
             int month = 8;
             Mock<IDateTimeProvider> dateTimeMock = new Mock<IDateTimeProvider>();
             dateTimeMock.Setup(d => d.GetNow()).Returns(new DateTime(2020, month, 15));
+            OrderStatus orderStatus = new OrderStatusBuilder().Build();
 
-            Order order = orderDTO.ToOrder(new User(), new List<Plant>(), dateTimeMock.Object);
+            Order order = orderDTO.ToOrder(new User(), new List<Plant>(), dateTimeMock.Object, orderStatus);
 
             Assert.AreEqual(month + 1, order.Date.Month);
         }
@@ -33,8 +35,9 @@ namespace Plants_Monthly_Tests.UnitTests.Mappers
             int month = 8;
             Mock<IDateTimeProvider> dateTimeMock = new Mock<IDateTimeProvider>();
             dateTimeMock.Setup(d => d.GetNow()).Returns(new DateTime(2020, month, 14));
+            OrderStatus orderStatus = new OrderStatusBuilder().Build();
 
-            Order order = orderDTO.ToOrder(new User(), new List<Plant>(), dateTimeMock.Object);
+            Order order = orderDTO.ToOrder(new User(), new List<Plant>(), dateTimeMock.Object, orderStatus);
 
             Assert.AreEqual(month, order.Date.Month);
         }

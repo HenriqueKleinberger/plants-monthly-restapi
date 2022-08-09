@@ -22,6 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Migrations\Scripts\order-statuses-insert\DOWN.SQL">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Migrations\Scripts\order-statuses-insert\UP.SQL">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Migrations\Scripts\initial-load\DOWN.SQL">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

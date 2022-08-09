@@ -32,7 +32,7 @@ namespace Plants_Monthly.DAL
                 .PushTokens
                 .Include(pt => pt.User)
                 .ThenInclude(u => u.Orders)
-                .Where(pt => pt.User.Orders.Any(o => o.Date.Month == DateTime.Now.Month && o.Status == OrderStatus.Opened))
+                .Where(pt => pt.User.Orders.Any(o => o.Date.Month == DateTime.Now.Month && o.Status.Name == Constants.OrderStatus.OPENED))
                 .ToListAsync();
 
             _logger.LogInformation("### PushTokenDAL - GetPushTokensAsync ended ###");

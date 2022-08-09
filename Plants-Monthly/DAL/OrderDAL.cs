@@ -15,13 +15,15 @@ namespace Plants_Monthly.DAL
         private readonly IPlantDAL _plantDAL;
         private readonly IUserDAL _userDAL;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IOrderStatusDAL _orderStatusDAL;
 
         public OrderDAL(
             ILogger<OrderDAL> logger,
             FarmsDbContext dbContext,
             IPlantDAL plantDAL,
             IUserDAL userDAL,
-            IDateTimeProvider dateTimeProvider
+            IDateTimeProvider dateTimeProvider,
+            IOrderStatusDAL orderStatusDAL
             )
         {
             _logger = logger;
@@ -29,6 +31,7 @@ namespace Plants_Monthly.DAL
             _plantDAL = plantDAL;
             _userDAL = userDAL;
             _dateTimeProvider = dateTimeProvider;
+            _orderStatusDAL = orderStatusDAL;
         }
         public async Task<Order> GetOrderAsync(int userId, int orderId)
         {
@@ -54,7 +57,7 @@ namespace Plants_Monthly.DAL
 
             Order? order = await _dbContext
                 .Orders
-                .Where(o => o.User.Id == userId && o.Status == OrderStatus.Opened)
+                .Where(o => o.User.Id == userId && o.Status.Name == Constants.OrderStatus.OPENED)
                 .Include(o => o.Plants)
                 .FirstOrDefaultAsync();
 
@@ -71,8 +74,10 @@ namespace Plants_Monthly.DAL
 
             List<Plant> plants = await _plantDAL.GetPlantsAsync(orderDTO.Plants.ConvertAll(p => p.Id));
             User user = await _userDAL.GetUserAsync(userId);
+            OrderStatus orderStatus = await _orderStatusDAL.GetOrderStatusAsync(Constants.OrderStatus.OPENED);
 
-            Order order = (await _dbContext.AddAsync(orderDTO.ToOrder(user, plants, _dateTimeProvider))).Entity;
+
+            Order order = (await _dbContext.AddAsync(orderDTO.ToOrder(user, plants, _dateTimeProvider, orderStatus))).Entity;
 
             await _dbContext.SaveChangesAsync();
 

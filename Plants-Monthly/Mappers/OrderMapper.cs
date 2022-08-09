@@ -20,7 +20,7 @@ namespace Plants_Monthly.Mappers
             return orderDTO;
         }
 
-        public static Order ToOrder(this OrderDTO orderDTO, User user, List<Plant> plants, IDateTimeProvider dateTimeProvider)
+        public static Order ToOrder(this OrderDTO orderDTO, User user, List<Plant> plants, IDateTimeProvider dateTimeProvider, OrderStatus orderStatus)
         {
             DateTime today = dateTimeProvider.GetNow();
             Order order = new Order()
@@ -29,7 +29,7 @@ namespace Plants_Monthly.Mappers
                 Date = today.AddMonths(today.Date.Day >= 15 ? 1 : 0),
                 Plants = plants,
                 User = user,
-                Status = OrderStatus.Opened
+                Status = orderStatus
             };
 
             return order;

@@ -11,6 +11,8 @@ namespace Plants_Monthly.Model
         public DbSet<User> Users { get; set; }
         public DbSet<PushToken> PushTokens { get; set; }
 
+        public DbSet<OrderStatus> OrderStatuses { get; set; }
+
         protected readonly IConfiguration Configuration;
 
         public FarmsDbContext(IConfiguration configuration)

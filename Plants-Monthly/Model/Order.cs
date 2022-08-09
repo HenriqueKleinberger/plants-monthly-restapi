@@ -11,13 +11,5 @@ namespace Plants_Monthly.Model
         public List<Plant> Plants { get; set; }
         public OrderStatus Status { get; set; }
     }
-
-    public enum OrderStatus
-    {
-        Opened,
-        WaitingDelivery,
-        Deliveled,
-        Canceled
-    }
 }
 

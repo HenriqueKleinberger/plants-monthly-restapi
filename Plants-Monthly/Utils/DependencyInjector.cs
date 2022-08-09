@@ -18,6 +18,7 @@ namespace Plants_Monthly.Utils
             services.AddScoped<IUserDAL, UserDAL>();
             services.AddScoped<IPushTokenDAL, PushTokenDAL>();
             services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+            services.AddScoped<IOrderStatusDAL, OrderStatusDAL>();
             services.AddScoped<PushNotificationJob>();
         }
     }
