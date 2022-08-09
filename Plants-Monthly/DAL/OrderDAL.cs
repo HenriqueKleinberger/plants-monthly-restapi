@@ -58,7 +58,7 @@ namespace Plants_Monthly.DAL
 
             Order? order = await _dbContext
                 .Orders
-                .Where(o => o.User.Id == userId && o.Status.Name == Constants.OrderStatus.OPENED)
+                .Where(o => o.User.Id == userId)
                 .Include(o => o.OrderPlants)
                 .ThenInclude(o => o.Plant)
                 .Include(o => o.Status)
