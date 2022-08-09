@@ -14,20 +14,20 @@ namespace Plants_Monthly.Mappers
                 Id = order.Id,
                 Month = order.Date.Month,
                 Year = order.Date.Year,
-                Plants = order.Plants.ConvertAll(p => p.ToPlantDTO())
+                Plants = order.OrderPlants.ConvertAll(op => op.Plant.ToPlantDTO()),
+                Status = order.Status.Name
             };
 
             return orderDTO;
         }
 
-        public static Order ToOrder(this OrderDTO orderDTO, User user, List<Plant> plants, IDateTimeProvider dateTimeProvider, OrderStatus orderStatus)
+        public static Order ToOrder(this OrderDTO orderDTO, User user, IDateTimeProvider dateTimeProvider, OrderStatus orderStatus)
         {
             DateTime today = dateTimeProvider.GetNow();
             Order order = new Order()
             {
                 Id = orderDTO.Id,
                 Date = today.AddMonths(today.Date.Day >= 15 ? 1 : 0),
-                Plants = plants,
                 User = user,
                 Status = orderStatus
             };

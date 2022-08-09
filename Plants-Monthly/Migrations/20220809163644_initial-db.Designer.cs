@@ -12,8 +12,8 @@ using Plants_Monthly.Model;
 namespace Plants_Monthly.Migrations
 {
     [DbContext(typeof(FarmsDbContext))]
-    [Migration("20220808113349_create-push-token-table")]
-    partial class createpushtokentable
+    [Migration("20220809163644_initial-db")]
+    partial class initialdb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,21 +23,6 @@ namespace Plants_Monthly.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("OrderPlant", b =>
-                {
-                    b.Property<int>("OrdersId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PlantsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("OrdersId", "PlantsId");
-
-                    b.HasIndex("PlantsId");
-
-                    b.ToTable("OrderPlant");
-                });
 
             modelBuilder.Entity("Plants_Monthly.Model.Category", b =>
                 {
@@ -64,7 +49,7 @@ namespace Plants_Monthly.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -72,9 +57,52 @@ namespace Plants_Monthly.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("StatusId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Plants_Monthly.Model.OrderPlants", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PlantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("PlantId");
+
+                    b.ToTable("OrderPlants");
+                });
+
+            modelBuilder.Entity("Plants_Monthly.Model.OrderStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderStatuses");
                 });
 
             modelBuilder.Entity("Plants_Monthly.Model.Plant", b =>
@@ -140,30 +168,42 @@ namespace Plants_Monthly.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("OrderPlant", b =>
-                {
-                    b.HasOne("Plants_Monthly.Model.Order", null)
-                        .WithMany()
-                        .HasForeignKey("OrdersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Plants_Monthly.Model.Plant", null)
-                        .WithMany()
-                        .HasForeignKey("PlantsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Plants_Monthly.Model.Order", b =>
                 {
+                    b.HasOne("Plants_Monthly.Model.OrderStatus", "Status")
+                        .WithMany("Orders")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Plants_Monthly.Model.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Status");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Plants_Monthly.Model.OrderPlants", b =>
+                {
+                    b.HasOne("Plants_Monthly.Model.Order", "Order")
+                        .WithMany("OrderPlants")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Plants_Monthly.Model.Plant", "Plant")
+                        .WithMany("OrderPlants")
+                        .HasForeignKey("PlantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Plant");
                 });
 
             modelBuilder.Entity("Plants_Monthly.Model.Plant", b =>
@@ -191,6 +231,21 @@ namespace Plants_Monthly.Migrations
             modelBuilder.Entity("Plants_Monthly.Model.Category", b =>
                 {
                     b.Navigation("Plants");
+                });
+
+            modelBuilder.Entity("Plants_Monthly.Model.Order", b =>
+                {
+                    b.Navigation("OrderPlants");
+                });
+
+            modelBuilder.Entity("Plants_Monthly.Model.OrderStatus", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Plants_Monthly.Model.Plant", b =>
+                {
+                    b.Navigation("OrderPlants");
                 });
 
             modelBuilder.Entity("Plants_Monthly.Model.User", b =>

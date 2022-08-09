@@ -6,6 +6,7 @@
         public int Month { get; set; }
         public int Year { get; set; }
         public List<PlantDTO> Plants { get; set; }
+        public string? Status { get; set; }
     }
 }
 

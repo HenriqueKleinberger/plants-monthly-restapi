@@ -23,7 +23,7 @@ namespace Plants_Monthly_Tests.UnitTests.Mappers
             dateTimeMock.Setup(d => d.GetNow()).Returns(new DateTime(2020, month, 15));
             OrderStatus orderStatus = new OrderStatusBuilder().Build();
 
-            Order order = orderDTO.ToOrder(new User(), new List<Plant>(), dateTimeMock.Object, orderStatus);
+            Order order = orderDTO.ToOrder(new User(), dateTimeMock.Object, orderStatus);
 
             Assert.AreEqual(month + 1, order.Date.Month);
         }
@@ -37,7 +37,7 @@ namespace Plants_Monthly_Tests.UnitTests.Mappers
             dateTimeMock.Setup(d => d.GetNow()).Returns(new DateTime(2020, month, 14));
             OrderStatus orderStatus = new OrderStatusBuilder().Build();
 
-            Order order = orderDTO.ToOrder(new User(), new List<Plant>(), dateTimeMock.Object, orderStatus);
+            Order order = orderDTO.ToOrder(new User(), dateTimeMock.Object, orderStatus);
 
             Assert.AreEqual(month, order.Date.Month);
         }

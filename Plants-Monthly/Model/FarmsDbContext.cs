@@ -13,11 +13,28 @@ namespace Plants_Monthly.Model
 
         public DbSet<OrderStatus> OrderStatuses { get; set; }
 
+        public DbSet<OrderPlants> OrderPlants { get; set; }
+
         protected readonly IConfiguration Configuration;
 
         public FarmsDbContext(IConfiguration configuration)
         {
             Configuration = configuration;
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<OrderPlants>()
+                .HasOne(o => o.Order)
+                .WithMany(op => op.OrderPlants)
+                .HasForeignKey(oi => oi.OrderId);
+
+            modelBuilder.Entity<OrderPlants>()
+              .HasOne(o => o.Plant)
+              .WithMany(p => p.OrderPlants)
+              .HasForeignKey(pi => pi.PlantId);
+
+            base.OnModelCreating(modelBuilder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

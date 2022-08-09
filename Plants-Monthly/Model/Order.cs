@@ -8,8 +8,8 @@ namespace Plants_Monthly.Model
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public User User { get; set; }
-        public List<Plant> Plants { get; set; }
         public OrderStatus Status { get; set; }
+        public List<OrderPlants> OrderPlants { get; set; }
     }
 }
 

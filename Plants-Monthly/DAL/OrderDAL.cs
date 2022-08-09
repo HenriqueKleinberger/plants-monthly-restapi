@@ -40,7 +40,8 @@ namespace Plants_Monthly.DAL
             Order? order = await _dbContext
                 .Orders
                 .Where(o => o.Id == orderId && o.User.Id == userId)
-                .Include(o => o.Plants)
+                .Include(o => o.OrderPlants)
+                .Include(o => o.Status)
                 .FirstOrDefaultAsync();
 
             if (order == null) throw new OrderNotFoundException($"There is no order with id {orderId} for the user {userId}");
@@ -51,19 +52,22 @@ namespace Plants_Monthly.DAL
         }
 
 
-        public async Task<OrderDTO> GetOrderOpenedAsync(int userId)
+        public async Task<OrderDTO> GetLastOrderAsync(int userId)
         {
-            _logger.LogInformation("### OrderDAL - GetOrderOpenedAsync started ###");
+            _logger.LogInformation("### OrderDAL - GetLastOrderAsync started ###");
 
             Order? order = await _dbContext
                 .Orders
                 .Where(o => o.User.Id == userId && o.Status.Name == Constants.OrderStatus.OPENED)
-                .Include(o => o.Plants)
+                .Include(o => o.OrderPlants)
+                .ThenInclude(o => o.Plant)
+                .Include(o => o.Status)
+                .OrderByDescending(o => o.Date)
                 .FirstOrDefaultAsync();
 
-            if (order == null) throw new OrderNotFoundException($"There is no order opened for the user {userId}");
+            if (order == null) throw new OrderNotFoundException($"There is no order for the user {userId}");
 
-            _logger.LogInformation("### OrderDAL - GetOrderOpenedAsync ended ###");
+            _logger.LogInformation("### OrderDAL - GetLastOrderAsync ended ###");
 
             return order.ToOrderDTO();
         }
@@ -75,9 +79,15 @@ namespace Plants_Monthly.DAL
             List<Plant> plants = await _plantDAL.GetPlantsAsync(orderDTO.Plants.ConvertAll(p => p.Id));
             User user = await _userDAL.GetUserAsync(userId);
             OrderStatus orderStatus = await _orderStatusDAL.GetOrderStatusAsync(Constants.OrderStatus.OPENED);
+            Order order = orderDTO.ToOrder(user, _dateTimeProvider, orderStatus);
+            order.OrderPlants = orderDTO.Plants.ConvertAll(p => new OrderPlants()
+            {
+                Order = order,
+                Plant = plants.Find(pl => pl.Id == p.Id),
+            });
 
 
-            Order order = (await _dbContext.AddAsync(orderDTO.ToOrder(user, plants, _dateTimeProvider, orderStatus))).Entity;
+            Order entity = (await _dbContext.AddAsync(order)).Entity;
 
             await _dbContext.SaveChangesAsync();
 
@@ -92,7 +102,11 @@ namespace Plants_Monthly.DAL
 
             List<Plant> plants = await _plantDAL.GetPlantsAsync(orderDTO.Plants.ConvertAll(p => p.Id));
 
-            order.Plants = plants;
+            order.OrderPlants = orderDTO.Plants.ConvertAll(p => new OrderPlants()
+            {
+                Order = order,
+                Plant = plants.Find(pl => pl.Id == p.Id),
+            });
 
             await _dbContext.SaveChangesAsync();
 

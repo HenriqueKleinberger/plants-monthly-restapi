@@ -21,12 +21,12 @@ namespace Plants_Monthly.Controllers
             _orderBLL = orderBLL;
         }
 
-        [HttpGet("user/{userId}/opened", Name = "GetOrders")]
+        [HttpGet("user/{userId}/last", Name = "GetOrders")]
         public async Task<IActionResult> Get(int userId)
         {
             try
             {
-                OrderDTO orderDTO = await _orderBLL.GetOrderOpenedAsync(userId);
+                OrderDTO orderDTO = await _orderBLL.GetLastOrderAsync(userId);
                 return Ok(orderDTO);
             } catch (OrderNotFoundException Exception)
             {
