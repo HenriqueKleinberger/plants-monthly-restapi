@@ -4,6 +4,7 @@ using Plants_Monthly.Mappers;
 using Plants_Monthly.Model;
 using Microsoft.EntityFrameworkCore;
 using Plants_Monthly.Exceptions;
+using Plants_Monthly.Utils;
 
 namespace Plants_Monthly.DAL
 {
@@ -13,18 +14,21 @@ namespace Plants_Monthly.DAL
         private readonly FarmsDbContext _dbContext;
         private readonly IPlantDAL _plantDAL;
         private readonly IUserDAL _userDAL;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public OrderDAL(
             ILogger<OrderDAL> logger,
             FarmsDbContext dbContext,
             IPlantDAL plantDAL,
-            IUserDAL userDAL
+            IUserDAL userDAL,
+            IDateTimeProvider dateTimeProvider
             )
         {
             _logger = logger;
             _dbContext = dbContext;
             _plantDAL = plantDAL;
             _userDAL = userDAL;
+            _dateTimeProvider = dateTimeProvider;
         }
         public async Task<Order> GetOrderAsync(int userId, int orderId)
         {
@@ -68,7 +72,7 @@ namespace Plants_Monthly.DAL
             List<Plant> plants = await _plantDAL.GetPlantsAsync(orderDTO.Plants.ConvertAll(p => p.Id));
             User user = await _userDAL.GetUserAsync(userId);
 
-            Order order = (await _dbContext.AddAsync(orderDTO.ToOrder(user, plants))).Entity;
+            Order order = (await _dbContext.AddAsync(orderDTO.ToOrder(user, plants, _dateTimeProvider))).Entity;
 
             await _dbContext.SaveChangesAsync();
 

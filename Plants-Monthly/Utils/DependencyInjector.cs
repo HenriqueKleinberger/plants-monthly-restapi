@@ -3,7 +3,6 @@ using Plants_Monthly.BLL;
 using Plants_Monthly.DAL.Interfaces;
 using Plants_Monthly.DAL;
 using Plants_Monthly.Schedules;
-using Quartz;
 
 namespace Plants_Monthly.Utils
 {
@@ -18,6 +17,7 @@ namespace Plants_Monthly.Utils
             services.AddScoped<IPlantDAL, PlantDAL>();
             services.AddScoped<IUserDAL, UserDAL>();
             services.AddScoped<IPushTokenDAL, PushTokenDAL>();
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
             services.AddScoped<PushNotificationJob>();
         }
     }
