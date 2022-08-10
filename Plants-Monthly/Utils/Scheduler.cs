@@ -20,8 +20,7 @@ namespace Plants_Monthly.Utils
                     .WithIdentity("Push Notification Trigger")
                     .ForJob(jobKey)
                     .StartNow()
-                    .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromMinutes(20)).RepeatForever())
-                    //.WithCronSchedule("0 0 19 25 * ?")
+                    .WithCronSchedule("0 0 19 25 * ?")
                     .WithDescription("Push Notification Trigger")
                 );
             });
